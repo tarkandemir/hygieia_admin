@@ -1,0 +1,6 @@
+Ürün Adı,SKU,Kategori,Toptan Fiyat,Perakende Fiyat,Stok,Min Stok,Birim,Ağırlık,Uzunluk,Genişlik,Yükseklik,Tedarikçi,Durum,Açıklama
+"Premium Kahve Makinesi",COFFEE-001,Elektronik,450.00,650.00,15,3,adet,3.2,25,20,30,"Kahve Dünyası Ltd.",active,"Otomatik kahve makinesi, programlanabilir"
+"Organic Green Tea",TEA-002,Gıda & İçecek,12.50,18.00,100,20,paket,0.2,10,8,15,"Doğal Ürünler A.Ş.",active,"Organik yeşil çay, 20 poşet"
+"Ergonomik Mouse",MOUSE-003,Elektronik,35.00,55.00,50,10,adet,0.15,12,7,4,"Tech Accessories",active,"Kablosuz ergonomik mouse"
+"Bamboo Cutting Board",BOARD-004,Ev & Bahçe,25.00,40.00,30,5,adet,0.8,35,25,2,"Wood Craft Co.",active,"Bambu kesme tahtası, antibakteriyel"
+"Cotton T-Shirt",SHIRT-005,Giyim & Tekstil,15.00,25.00,75,15,adet,0.2,30,25,1,"Fashion Forward",active,"100% pamuk t-shirt, unisex" 
