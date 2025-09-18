@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -21,7 +21,14 @@ export default function Header({ activeLink }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const itemCount = getItemCount();
+  const [isClient, setIsClient] = useState(false);
+
+  // Fix hydration mismatch by ensuring client-only rendering for dynamic content
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const itemCount = isClient ? getItemCount() : 0;
 
   const handleLinkClick = () => {
     startLoading();
@@ -48,17 +55,14 @@ export default function Header({ activeLink }: HeaderProps) {
     setIsSearchOpen(false);
     // Small delay to show loading before navigation
     setTimeout(() => {
-      window.location.href = url;
+      router.push(url);
     }, 100);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      startLoading();
-      setIsSearchOpen(false);
-      setIsDropdownOpen(false);
-      router.push(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
+      handleNavigationClick(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
 
@@ -66,9 +70,9 @@ export default function Header({ activeLink }: HeaderProps) {
     setIsSearchOpen(!isSearchOpen);
     setIsDropdownOpen(false);
     if (!isSearchOpen) {
-      // Focus search input after animation
+      // Focus search input when opening
       setTimeout(() => {
-        const searchInput = document.getElementById('header-search-input');
+        const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement;
         if (searchInput) {
           searchInput.focus();
         }
@@ -78,172 +82,171 @@ export default function Header({ activeLink }: HeaderProps) {
 
   return (
     <header className="bg-[#000080] text-white">
-      <div className="container mx-auto px-6 py-5">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-6">
+        <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/" onClick={handleLinkClick}>
             <Image
               src="/logo.png"
-              alt="Hygieia"
-              width={125}
+              alt="Hygieia Logo"
+              width={120}
               height={40}
               className="h-10 w-auto"
-              priority
             />
           </Link>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <a
-              href="#about"
-              onClick={(e) => handleSmoothScroll(e, 'about')}
-              className={`text-sm font-semibold hover:text-[#6AF0D2] transition-colors cursor-pointer ${
-                activeLink === 'about' ? 'text-[#6AF0D2]' : ''
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link 
+              href="/" 
+              onClick={handleLinkClick}
+              className={`hover:text-[#6AF0D2] transition-colors ${
+                activeLink === 'home' ? 'text-[#6AF0D2]' : ''
               }`}
             >
-              Hakkımızda
-            </a>
-            <a
-              href="#services"
-              onClick={(e) => handleSmoothScroll(e, 'services')}
-              className={`text-sm font-semibold hover:text-[#6AF0D2] transition-colors cursor-pointer ${
-                activeLink === 'services' ? 'text-[#6AF0D2]' : ''
-              }`}
-            >
-              Hizmetlerimiz
-            </a>
-            <div className={`relative ${activeLink === 'products' ? 'border-b-2 border-[#6AF0D2]' : ''}`}>
+              Anasayfa
+            </Link>
+
+            {/* Products Dropdown */}
+            <div className="relative">
               <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className={`flex items-center space-x-1 text-sm font-semibold hover:text-[#6AF0D2] transition-colors ${
+                onClick={() => {
+                  setIsDropdownOpen(!isDropdownOpen);
+                  setIsSearchOpen(false);
+                }}
+                className={`flex items-center space-x-1 hover:text-[#6AF0D2] transition-colors ${
                   activeLink === 'products' ? 'text-[#6AF0D2]' : ''
                 }`}
               >
                 <span>Ürünler</span>
-                <ChevronDown size={16} className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={16} />
               </button>
-              
-              {/* Dropdown Menu */}
-              {isDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                  <button
-                    onClick={() => handleNavigationClick('/products')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#000069]"
-                  >
-                    Tüm Ürünler
-                  </button>
-                  <div className="border-t border-gray-100 my-2"></div>
-                  {categories
-                    .filter(category => category.productCount > 0)
-                    .slice(0, 8)
-                    .map((category) => (
+
+              {isDropdownOpen && isClient && (
+                <div className="absolute top-full left-0 mt-2 w-64 bg-white text-gray-900 rounded-lg shadow-lg z-50">
+                  <div className="py-2">
                     <button
-                      key={category._id}
-                      onClick={() => handleNavigationClick(`/kategori/${category.slug}`)}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#000069]"
+                      onClick={() => handleNavigationClick('/products')}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
                     >
-                      {category.name}
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center">
+                          <span className="text-xs">📦</span>
+                        </div>
+                        <span>Tüm Ürünler</span>
+                      </div>
                     </button>
-                  ))}
-                  {categories.filter(category => category.productCount > 0).length > 8 && (
-                    <>
-                      <div className="border-t border-gray-100 my-2"></div>
+                    
+                    {categories
+                      .filter(category => category.productCount > 0)
+                      .map((category) => (
                       <button
-                        onClick={() => handleNavigationClick('/products')}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-[#000069]"
+                        key={category._id}
+                        onClick={() => handleNavigationClick(`/kategori/${category.slug}`)}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
                       >
-                        Daha fazla kategori...
+                        <div className="flex items-center space-x-2">
+                          <div 
+                            className="w-6 h-6 rounded flex items-center justify-center text-white text-xs"
+                            style={{ backgroundColor: category.color || '#6AF0D2' }}
+                          >
+                            {category.icon === 'cube' && '📦'}
+                            {category.icon === 'cleaning' && '🧽'}
+                            {category.icon === 'paper' && '📄'}
+                            {category.icon === 'food' && '🍽️'}
+                            {category.icon === 'office' && '🖥️'}
+                          </div>
+                          <span>{category.name}</span>
+                        </div>
                       </button>
-                    </>
-                  )}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
-            <a
-              href="#contact"
+
+            <a 
+              href="#about" 
+              onClick={(e) => handleSmoothScroll(e, 'about')}
+              className="hover:text-[#6AF0D2] transition-colors"
+            >
+              Hakkımızda
+            </a>
+            
+            <a 
+              href="#services" 
+              onClick={(e) => handleSmoothScroll(e, 'services')}
+              className="hover:text-[#6AF0D2] transition-colors"
+            >
+              Hizmetlerimiz
+            </a>
+            
+            <a 
+              href="#contact" 
               onClick={(e) => handleSmoothScroll(e, 'contact')}
-              className={`text-sm font-semibold hover:text-[#6AF0D2] transition-colors cursor-pointer ${
-                activeLink === 'contact' ? 'text-[#6AF0D2]' : ''
-              }`}
+              className="hover:text-[#6AF0D2] transition-colors"
             >
               İletişim
             </a>
           </nav>
 
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-3">
-            {/* Call Button */}
-            <a
-              href="tel:+902121234567"
-              className="hidden md:flex items-center space-x-1 bg-[#6AF0D2] text-[#000080] px-4 py-2 rounded-lg font-semibold text-sm hover:bg-[#5BE0C2] transition-colors"
-            >
-              <Phone size={12} />
-              <span>Bizi Arayın</span>
+          {/* Right Side Actions */}
+          <div className="flex items-center space-x-4">
+            {/* Search */}
+            <div className="relative">
+              <button
+                onClick={handleSearchToggle}
+                className="p-2 hover:text-[#6AF0D2] transition-colors"
+                aria-label="Arama"
+              >
+                {isSearchOpen ? <X size={20} /> : <Search size={20} />}
+              </button>
+
+              {isSearchOpen && isClient && (
+                <div className="absolute top-full right-0 mt-2 w-80 bg-white text-gray-900 rounded-lg shadow-lg z-50 p-4">
+                  <form onSubmit={handleSearchSubmit} className="flex space-x-2">
+                    <input
+                      type="search"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      placeholder="Ürün ara..."
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6AF0D2] focus:border-transparent"
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-[#000080] text-white rounded-lg hover:bg-[#000069] transition-colors"
+                    >
+                      Ara
+                    </button>
+                  </form>
+                </div>
+              )}
+            </div>
+
+            {/* Phone */}
+            <a href="tel:+905551234567" className="hidden md:flex items-center space-x-2 hover:text-[#6AF0D2] transition-colors">
+              <Phone size={20} />
+              <span>0555 123 45 67</span>
             </a>
 
-            {/* Search Button */}
-            <button 
-              onClick={handleSearchToggle}
-              className="p-2 border border-[#6AF0D2] rounded-lg hover:bg-[#6AF0D2] hover:text-[#000080] transition-colors"
-            >
-              <Search size={14} />
-            </button>
-
-            {/* Cart Button */}
+            {/* Cart */}
             <button
               onClick={() => handleNavigationClick('/cart')}
-              className="relative p-2 border border-[#6AF0D2] rounded-lg hover:bg-[#6AF0D2] hover:text-[#000080] transition-colors"
+              className="relative p-2 hover:text-[#6AF0D2] transition-colors"
+              aria-label="Sepet"
             >
-              <ShoppingBag size={14} />
-              {itemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#6AF0D2] text-[#000080] text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+              <ShoppingBag size={20} />
+              {isClient && itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#6AF0D2] text-[#000080] text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {itemCount}
                 </span>
               )}
             </button>
           </div>
         </div>
-
-        {/* Mobile Call Button */}
-        <div className="md:hidden mt-4 flex justify-center">
-          <a
-            href="tel:+902121234567"
-            className="flex items-center space-x-1 text-[#6AF0D2] font-semibold text-sm"
-          >
-            <Phone size={12} />
-            <span>Bizi Arayın</span>
-          </a>
-        </div>
-        
-        {/* Search Bar - Expanded */}
-        {isSearchOpen && (
-          <div className="mt-4 border-t border-[#6AF0D2]/30 pt-4">
-            <form onSubmit={handleSearchSubmit} className="relative max-w-md mx-auto">
-              <input
-                id="header-search-input"
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Ürün ara..."
-                className="w-full px-4 py-3 pr-12 bg-white/10 border border-[#6AF0D2]/30 rounded-lg text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#6AF0D2] focus:border-transparent"
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#6AF0D2] hover:text-white transition-colors"
-              >
-                <Search size={18} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsSearchOpen(false)}
-                className="absolute -right-10 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white transition-colors"
-              >
-                <X size={18} />
-              </button>
-            </form>
-          </div>
-        )}
       </div>
+
+      {/* Mobile Navigation (can be added later) */}
     </header>
   );
 }

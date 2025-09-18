@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
 import { ICartItem, ICart, IProduct } from '@/types';
 
 interface CartContextType {
@@ -10,6 +10,7 @@ interface CartContextType {
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   getItemCount: () => number;
+  isLoaded: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -36,7 +37,6 @@ function calculateTotals(items: ICartItem[]): Pick<ICart, 'subtotal' | 'taxAmoun
   const shippingCost = subtotal > 500 ? 0 : 50; // Free shipping over 500 TL
   const totalAmount = Math.round((subtotal + shippingCost) * 100) / 100; // Total = products + shipping (no extra VAT)
 
-
   return {
     subtotal,
     taxAmount,
@@ -49,37 +49,39 @@ function cartReducer(state: ICart, action: CartAction): ICart {
   switch (action.type) {
     case 'ADD_TO_CART': {
       const { product, quantity } = action.payload;
-      const existingItemIndex = state.items.findIndex(item => item.productId === product._id);
+      const existingItemIndex = state.items.findIndex(item => item.product._id === product._id);
       
       let newItems: ICartItem[];
       
       if (existingItemIndex >= 0) {
         // Update existing item with stock control
-        newItems = state.items.map((item, index) => {
-          if (index === existingItemIndex) {
-            const newQuantity = Math.min(item.quantity + quantity, product.stock); // Stock control
-            return {
-              ...item,
-              quantity: newQuantity,
-              totalPrice: Math.round(newQuantity * item.unitPrice * 100) / 100,
-            };
-          }
-          return item;
-        });
+        const existingItem = state.items[existingItemIndex];
+        const maxQuantity = Math.min(product.stock, existingItem.quantity + quantity);
+        const actualQuantity = Math.max(1, maxQuantity); // Ensure at least 1
+        
+        newItems = state.items.map((item, index) => 
+          index === existingItemIndex 
+            ? {
+                ...item, 
+                quantity: actualQuantity,
+                totalPrice: Math.round((product.retailPrice * actualQuantity) * 100) / 100
+              }
+            : item
+        );
       } else {
         // Add new item with stock control
-        const validQuantity = Math.min(quantity, product.stock); // Stock control
+        const safeQuantity = Math.min(Math.max(1, quantity), product.stock);
         const newItem: ICartItem = {
-          productId: product._id,
           product,
-          quantity: validQuantity,
+          quantity: safeQuantity,
           unitPrice: product.retailPrice,
-          totalPrice: Math.round(validQuantity * product.retailPrice * 100) / 100,
+          totalPrice: Math.round((product.retailPrice * safeQuantity) * 100) / 100,
         };
         newItems = [...state.items, newItem];
       }
 
       const totals = calculateTotals(newItems);
+      
       return {
         ...state,
         items: newItems,
@@ -88,8 +90,10 @@ function cartReducer(state: ICart, action: CartAction): ICart {
     }
 
     case 'REMOVE_FROM_CART': {
-      const newItems = state.items.filter(item => item.productId !== action.payload.productId);
+      const { productId } = action.payload;
+      const newItems = state.items.filter(item => item.product._id !== productId);
       const totals = calculateTotals(newItems);
+      
       return {
         ...state,
         items: newItems,
@@ -101,23 +105,25 @@ function cartReducer(state: ICart, action: CartAction): ICart {
       const { productId, quantity } = action.payload;
       
       if (quantity <= 0) {
+        // Remove item if quantity is 0 or less
         return cartReducer(state, { type: 'REMOVE_FROM_CART', payload: { productId } });
       }
-
+      
       const newItems = state.items.map(item => {
-        if (item.productId === productId) {
-          // Apply stock control when updating quantity
-          const validQuantity = Math.min(quantity, item.product.stock);
+        if (item.product._id === productId) {
+          // Apply stock control
+          const safeQuantity = Math.min(quantity, item.product.stock);
           return {
             ...item,
-            quantity: validQuantity,
-            totalPrice: Math.round(validQuantity * item.unitPrice * 100) / 100,
+            quantity: safeQuantity,
+            totalPrice: Math.round((item.unitPrice * safeQuantity) * 100) / 100,
           };
         }
         return item;
       });
 
       const totals = calculateTotals(newItems);
+      
       return {
         ...state,
         items: newItems,
@@ -125,11 +131,13 @@ function cartReducer(state: ICart, action: CartAction): ICart {
       };
     }
 
-    case 'CLEAR_CART':
+    case 'CLEAR_CART': {
       return initialCart;
+    }
 
-    case 'LOAD_CART':
+    case 'LOAD_CART': {
       return action.payload;
+    }
 
     default:
       return state;
@@ -138,24 +146,35 @@ function cartReducer(state: ICart, action: CartAction): ICart {
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, dispatch] = useReducer(cartReducer, initialCart);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load cart from localStorage on mount
+  // Load cart from localStorage on client side only
   useEffect(() => {
-    const savedCart = localStorage.getItem('hygieia-cart');
-    if (savedCart) {
+    if (typeof window !== 'undefined') {
       try {
-        const parsedCart = JSON.parse(savedCart);
-        dispatch({ type: 'LOAD_CART', payload: parsedCart });
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+          dispatch({ type: 'LOAD_CART', payload: parsedCart });
+        }
       } catch (error) {
         console.error('Error loading cart from localStorage:', error);
+      } finally {
+        setIsLoaded(true);
       }
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage whenever cart changes (only on client side)
   useEffect(() => {
-    localStorage.setItem('hygieia-cart', JSON.stringify(cart));
-  }, [cart]);
+    if (isLoaded && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('cart', JSON.stringify(cart));
+      } catch (error) {
+        console.error('Error saving cart to localStorage:', error);
+      }
+    }
+  }, [cart, isLoaded]);
 
   const addToCart = (product: IProduct, quantity: number) => {
     dispatch({ type: 'ADD_TO_CART', payload: { product, quantity } });
@@ -174,20 +193,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getItemCount = () => {
-    return cart.items.reduce((sum, item) => sum + item.quantity, 0);
+    return cart.items.reduce((total, item) => total + item.quantity, 0);
   };
 
   return (
-    <CartContext.Provider
-      value={{
-        cart,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        getItemCount,
-      }}
-    >
+    <CartContext.Provider value={{
+      cart,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      getItemCount,
+      isLoaded,
+    }}>
       {children}
     </CartContext.Provider>
   );
