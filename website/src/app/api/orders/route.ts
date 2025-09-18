@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Website order creation error:', error);
-    console.error('Error details:', error.stack);
+    console.error('Error details:', (error as Error).stack);
     return NextResponse.json(
       { 
         error: 'Sipariş oluşturulamadı',

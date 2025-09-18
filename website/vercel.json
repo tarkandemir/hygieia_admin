@@ -1,0 +1,10 @@
+{
+  "env": {
+    "NEXT_TELEMETRY_DISABLED": "1"
+  },
+  "functions": {
+    "app/api/orders/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}
