@@ -106,8 +106,8 @@ export default function HomePage() {
             <div className="relative">
               {/* Decorative dots pattern */}
               <div className="absolute top-0 left-0 w-40 h-40 opacity-20">
-                <div className="grid grid-cols-15 gap-1">
-                  {Array.from({ length: 225 }, (_, i) => (
+                <div className="grid grid-cols-12 gap-1">
+                  {Array.from({ length: 144 }, (_, i) => (
                     <div key={i} className="w-1 h-1 bg-[#9CEAEF] rounded-full"></div>
                   ))}
                 </div>
@@ -168,8 +168,8 @@ export default function HomePage() {
             <div className="relative">
               {/* Decorative dots pattern */}
               <div className="absolute top-0 left-0 w-40 h-40 opacity-20">
-                <div className="grid grid-cols-15 gap-1">
-                  {Array.from({ length: 225 }, (_, i) => (
+                <div className="grid grid-cols-12 gap-1">
+                  {Array.from({ length: 144 }, (_, i) => (
                     <div key={i} className="w-1 h-1 bg-[#000080] rounded-full"></div>
                   ))}
                 </div>
