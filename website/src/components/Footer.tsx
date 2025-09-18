@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
             <p className="text-xs">
-              © Tüm hakları saklıdır. 2023 Hygieia
+              © Tüm hakları saklıdır. 2025 Hygieia
             </p>
             
             <div className="flex items-center space-x-6">

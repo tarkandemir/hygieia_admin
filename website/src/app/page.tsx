@@ -92,12 +92,12 @@ export default function HomePage() {
               <div className="space-y-4 text-[#000080] text-base leading-7">
                 <p>
                   2021 yılında kurumsal firmaların çözüm ortağı olarak çıktığımız yolda amacımız doğru ürünü, 
-                  doğru fiyata ve söz verdiğimiz zamanda tedarik etmek. Çok kısa sürede Türkiye'nin önde gelen 
+                  doğru fiyata ve söz verdiğimiz zamanda tedarik etmek. Çok kısa sürede Türkiye&apos;nin önde gelen 
                   yerli ve yabancı firmaların tercihi olduk.
                 </p>
                 
                 <p>
-                  Yaptığımız işe ve size önem veriyor, Fark Yaratmak için Hygieia'yı denemenizi tavsiye ediyoruz.
+                  Yaptığımız işe ve size önem veriyor, Fark Yaratmak için Hygieia&apos;yı denemenizi tavsiye ediyoruz.
                 </p>
               </div>
             </div>
@@ -292,8 +292,8 @@ export default function HomePage() {
               className="mx-auto mb-8"
             />
             <blockquote className="text-xl text-white font-normal leading-relaxed">
-              "Yaptığımız işe ve size önem veriyor, Fark Yaratmak için<br />
-              Hygieia'yı denemenizi tavsiye ediyoruz."
+              &quot;Yaptığımız işe ve size önem veriyor, Fark Yaratmak için<br />
+              Hygieia&apos;yı denemenizi tavsiye ediyoruz.&quot;
             </blockquote>
           </div>
         </div>
