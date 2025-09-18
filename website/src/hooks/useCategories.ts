@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ICategory } from '@/types';
+import { ICategory } from '../types';
 
 interface CategoryWithCount extends ICategory {
   productCount: number;

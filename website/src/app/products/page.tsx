@@ -1,12 +1,12 @@
-import { connectToDatabase } from '@/lib/mongodb';
-import Category from '@/models/Category';
-import Product from '@/models/Product';
-import { ICategory, IProduct } from '@/types';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Breadcrumb from '@/components/Breadcrumb';
-import CategoryIcon from '@/components/CategoryIcon';
-// import ProductCard from '@/components/ProductCard';
+import { connectToDatabase } from '../../lib/mongodb';
+import Category from '../../models/Category';
+import Product from '../../models/Product';
+import { ICategory, IProduct } from '../../types';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import Breadcrumb from '../../components/Breadcrumb';
+import CategoryIcon from '../../components/CategoryIcon';
+// import ProductCard from './../components/ProductCard';
 import ProductsClient from './ProductsClient';
 
 async function getCategoriesWithProductCounts(): Promise<(ICategory & { productCount: number })[]> {

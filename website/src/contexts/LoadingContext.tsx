@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Loading from '@/components/Loading';
+import Loading from './components/Loading';
 
 interface LoadingContextType {
   isLoading: boolean;

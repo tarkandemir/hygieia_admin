@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { IProduct, ICategory } from '@/types';
-import { useCart } from '@/contexts/CartContext';
-import { useToast } from '@/components/ToastContainer';
-import { formatPriceSimple, getImageUrl } from '@/lib/utils';
-import ProductCard from '@/components/ProductCard';
-import ImageZoom from '@/components/ImageZoom';
+import { IProduct, ICategory } from '../../../../types';
+import { useCart } from '../../../../contexts/CartContext';
+import { useToast } from '../../../../components/ToastContainer';
+import { formatPriceSimple, getImageUrl } from '../../../../lib/utils';
+import ProductCard from '../../../../components/ProductCard';
+import ImageZoom from '../../../../components/ImageZoom';
 import { 
   Minus, 
   Plus, 

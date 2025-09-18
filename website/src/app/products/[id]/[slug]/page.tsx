@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation';
-import { connectToDatabase } from '@/lib/mongodb';
-import Product from '@/models/Product';
-import Category from '@/models/Category';
-import { IProduct, ICategory } from '@/types';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Breadcrumb from '@/components/Breadcrumb';
+import { connectToDatabase } from '../../../../lib/mongodb';
+import Product from '../../../../models/Product';
+import Category from '../../../../models/Category';
+import { IProduct, ICategory } from '../../../../types';
+import Header from '../../../../components/Header';
+import Footer from '../../../../components/Footer';
+import Breadcrumb from '../../../../components/Breadcrumb';
 import ProductDetailClient from './ProductDetailClient';
 
 async function getProduct(id: string): Promise<IProduct | null> {

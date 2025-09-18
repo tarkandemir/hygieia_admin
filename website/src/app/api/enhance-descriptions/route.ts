@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
-import Product from '@/models/Product';
+import { connectToDatabase } from '../../../lib/mongodb';
+import Product from '../../../models/Product';
 
 // SEO için geliştirilmiş açıklama oluşturucu
 function enhanceDescription(product: any) {

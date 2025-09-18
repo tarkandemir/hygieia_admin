@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { CartProvider } from "@/contexts/CartContext";
-import { ToastProvider } from "@/components/ToastContainer";
-import { LoadingProvider } from "@/contexts/LoadingContext";
-import NavigationHandler from "@/components/NavigationHandler";
+import { CartProvider } from "../contexts/CartContext";
+import { ToastProvider } from "../components/ToastContainer";
+import { LoadingProvider } from "../contexts/LoadingContext";
+import NavigationHandler from "../components/NavigationHandler";
 import "./globals.css";
 
 const inter = Inter({ 

@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCart } from '@/contexts/CartContext';
-import { useCategories } from '@/hooks/useCategories';
-import { useLoading } from '@/contexts/LoadingContext';
+import { useCart } from '../contexts/CartContext';
+import { useCategories } from '../hooks/useCategories';
+import { useLoading } from '../contexts/LoadingContext';
 import { Phone, Search, ShoppingBag, ChevronDown, X } from 'lucide-react';
 
 interface HeaderProps {

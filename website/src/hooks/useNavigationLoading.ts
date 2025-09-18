@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { useLoading } from '@/contexts/LoadingContext';
+import { useLoading } from '../contexts/LoadingContext';
 
 export function useNavigationLoading() {
   const pathname = usePathname();

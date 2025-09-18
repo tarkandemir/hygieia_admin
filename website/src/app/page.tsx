@@ -1,5 +1,5 @@
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Phone, MessageCircle } from 'lucide-react';

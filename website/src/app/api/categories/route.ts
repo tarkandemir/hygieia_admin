@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
-import Category from '@/models/Category';
-import Product from '@/models/Product';
+import { connectToDatabase } from '../../../lib/mongodb';
+import Category from '../../../models/Category';
+import Product from '../../../models/Product';
 
 export async function GET() {
   try {

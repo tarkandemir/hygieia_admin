@@ -1,6 +1,6 @@
 'use client';
 
-import { useNavigationLoading } from '@/hooks/useNavigationLoading';
+import { useNavigationLoading } from '../hooks/useNavigationLoading';
 
 export default function NavigationHandler() {
   useNavigationLoading();

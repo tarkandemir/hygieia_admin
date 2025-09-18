@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ICategory, IProduct } from '@/types';
-import ProductCard from '@/components/ProductCard';
-import CategoryIcon from '@/components/CategoryIcon';
+import { ICategory, IProduct } from '../../types';
+import ProductCard from '../../components/ProductCard';
+import CategoryIcon from '../../components/CategoryIcon';
 import { Search, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ProductsClientProps {

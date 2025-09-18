@@ -1,12 +1,12 @@
 import { notFound } from 'next/navigation';
-import { connectToDatabase } from '@/lib/mongodb';
-import Category from '@/models/Category';
-import Product from '@/models/Product';
-import { ICategory, IProduct } from '@/types';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Breadcrumb from '@/components/Breadcrumb';
-import ProductCard from '@/components/ProductCard';
+import { connectToDatabase } from '../../../lib/mongodb';
+import Category from '../../../models/Category';
+import Product from '../../../models/Product';
+import { ICategory, IProduct } from '../../../types';
+import Header from '../../../components/Header';
+import Footer from '../../../components/Footer';
+import Breadcrumb from '../../../components/Breadcrumb';
+import ProductCard from '../../../components/ProductCard';
 
 async function getCategory(slug: string): Promise<ICategory | null> {
   await connectToDatabase();
