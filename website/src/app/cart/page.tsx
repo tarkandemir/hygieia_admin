@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Breadcrumb from '@/components/Breadcrumb';
-import { useCart } from '@/contexts/CartContext';
-import { useToast } from '@/components/ToastContainer';
-import { formatPriceSimple, getImageUrl } from '@/lib/utils';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import Breadcrumb from '../../components/Breadcrumb';
+import { useCart } from '../../contexts/CartContext';
+import { useToast } from '../../components/ToastContainer';
+import { formatPriceSimple, getImageUrl } from '../../lib/utils';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
 
 export default function CartPage() {
