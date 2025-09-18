@@ -16,8 +16,6 @@ export default function CartPage() {
   const { showToast } = useToast();
   const [isClearing, setIsClearing] = useState(false);
 
-
-
   const breadcrumbItems = [
     { label: 'Anasayfa', href: '/' },
     { label: 'Sepetim' },
@@ -39,7 +37,7 @@ export default function CartPage() {
   };
 
   const handleUpdateQuantity = (productId: string, newQuantity: number, productName: string) => {
-    const item = cart.items.find(item => item.productId === productId);
+    const item = cart.items.find(item => item.product._id === productId);
     const oldQuantity = item?.quantity || 0;
     const maxStock = item?.product.stock || 0;
     
@@ -153,7 +151,7 @@ export default function CartPage() {
                 {/* Cart Items List */}
                 <div className="space-y-6">
                   {cart.items.map((item) => (
-                    <div key={item.productId} className="flex items-center space-x-4 py-4 border-b border-gray-100 last:border-b-0">
+                    <div key={item.product._id} className="flex items-center space-x-4 py-4 border-b border-gray-100 last:border-b-0">
                       {/* Product Image */}
                       <div className="flex-shrink-0">
                         <Image
@@ -180,7 +178,7 @@ export default function CartPage() {
                         {/* Quantity Controls */}
                         <div className="flex items-center space-x-3">
                           <button
-                            onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1, item.product.name)}
+                            onClick={() => handleUpdateQuantity(item.product._id, item.quantity - 1, item.product.name)}
                             disabled={item.quantity <= 1}
                             className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                           >
@@ -190,7 +188,7 @@ export default function CartPage() {
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1, item.product.name)}
+                            onClick={() => handleUpdateQuantity(item.product._id, item.quantity + 1, item.product.name)}
                             disabled={item.quantity >= item.product.stock}
                             className="w-8 h-8 bg-[#6AF0D2] text-[#000069] rounded-full flex items-center justify-center hover:bg-[#5BE0C2] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                           >
@@ -210,7 +208,7 @@ export default function CartPage() {
                           </div>
                         </div>
                         <button
-                          onClick={() => handleRemoveFromCart(item.productId, item.product.name)}
+                          onClick={() => handleRemoveFromCart(item.product._id, item.product.name)}
                           className="mt-2 text-red-600 hover:text-red-700 p-1"
                         >
                           <Trash2 size={16} />
