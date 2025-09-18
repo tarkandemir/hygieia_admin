@@ -6,14 +6,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
   images: {
     domains: ['localhost'],
     formats: ['image/webp', 'image/avif'],
@@ -28,8 +20,6 @@ const nextConfig = {
       },
     ],
   },
-  // Fix workspace root warning
-  outputFileTracingRoot: '/Users/tarkandemir/Documents/Cursor/hygieia_v4/website',
 };
 
 module.exports = nextConfig;
