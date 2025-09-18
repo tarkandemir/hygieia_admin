@@ -25,7 +25,7 @@ interface Order {
     email: string;
     phone: string;
     company?: string;
-  };
+  } | null;
   totalAmount: number;
   status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded' | 'partial';
@@ -33,7 +33,7 @@ interface Order {
   createdBy: {
     name: string;
     email: string;
-  };
+  } | null;
   createdAt: string;
 }
 
@@ -630,19 +630,19 @@ export default function OrdersPage() {
                             {order.orderNumber}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {order.createdBy.name}
+                            {order.createdBy?.name || 'Bilinmiyor'}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {order.customer.name}
+                            {order.customer?.name || 'Bilinmiyor'}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {order.customer.email}
+                            {order.customer?.email || 'Bilinmiyor'}
                           </div>
-                          {order.customer.company && (
+                          {order.customer?.company && (
                             <div className="text-xs text-gray-400">
                               {order.customer.company}
                             </div>

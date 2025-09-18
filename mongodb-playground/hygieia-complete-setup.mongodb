@@ -1,0 +1,631 @@
+/* global use, db */
+// MongoDB Playground - Hygieia B2B Platform Complete Setup
+// Bu script tüm koleksiyonları oluşturur ve demo veri ekler
+
+const database = 'hygieia';
+
+// Veritabanını kullan
+use(database);
+
+// Mevcut koleksiyonları temizle (isteğe bağlı)
+db.users.drop();
+db.categories.drop();
+db.products.drop();
+db.orders.drop();
+db.settings.drop();
+db.notifications.drop();
+
+// 1. USERS Koleksiyonu ve Veri
+console.log('👥 Kullanıcılar oluşturuluyor...');
+db.createCollection('users');
+db.users.insertMany([
+  {
+    email: "admin@hygieia.com",
+    password: "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewfhkY3nQz7TqYKm", // 123456
+    name: "System Administrator",
+    role: "admin",
+    permissions: ["*"],
+    isActive: true,
+    lastLogin: null,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    email: "manager@hygieia.com",
+    password: "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewfhkY3nQz7TqYKm", // 123456
+    name: "Sales Manager",
+    role: "manager",
+    permissions: ["users:read", "products:*", "orders:*", "dashboard:read", "reports:read"],
+    isActive: true,
+    lastLogin: null,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    email: "employee@hygieia.com",
+    password: "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewfhkY3nQz7TqYKm", // 123456
+    name: "Sales Employee",
+    role: "employee",
+    permissions: ["products:read", "orders:read", "dashboard:read"],
+    isActive: true,
+    lastLogin: null,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+]);
+
+// 2. CATEGORIES Koleksiyonu ve Veri
+console.log('📂 Kategoriler oluşturuluyor...');
+db.createCollection('categories');
+db.categories.insertMany([
+  {
+    name: "Elektronik",
+    description: "Bilgisayar, telefon, televizyon ve elektronik cihazlar",
+    icon: "cpu-chip",
+    color: "#3b82f6",
+    order: 1,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Giyim & Tekstil",
+    description: "Kıyafet, ayakkabı ve tekstil ürünleri",
+    icon: "sparkles",
+    color: "#ec4899",
+    order: 2,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Gıda & İçecek",
+    description: "Yiyecek, içecek ve gıda ürünleri",
+    icon: "cake",
+    color: "#10b981",
+    order: 3,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Ev & Bahçe",
+    description: "Ev eşyaları, mobilya ve bahçe ürünleri",
+    icon: "home",
+    color: "#f59e0b",
+    order: 4,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Otomotiv",
+    description: "Araç yedek parçaları ve otomotiv ürünleri",
+    icon: "truck",
+    color: "#6b7280",
+    order: 5,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Spor & Outdoor",
+    description: "Spor malzemeleri ve outdoor ürünleri",
+    icon: "trophy",
+    color: "#ef4444",
+    order: 6,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Sağlık & Güzellik",
+    description: "Kozmetik, kişisel bakım ve sağlık ürünleri",
+    icon: "heart",
+    color: "#8b5cf6",
+    order: 7,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Kitap & Medya",
+    description: "Kitap, dergi ve medya ürünleri",
+    icon: "book-open",
+    color: "#059669",
+    order: 8,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Ofis Malzemeleri",
+    description: "Kırtasiye, ofis mobilyası ve büro malzemeleri",
+    icon: "briefcase",
+    color: "#0891b2",
+    order: 9,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Makine & Ekipman",
+    description: "Endüstriyel makine ve ekipmanlar",
+    icon: "cog-6-tooth",
+    color: "#dc2626",
+    order: 10,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+]);
+
+// 3. PRODUCTS Koleksiyonu ve Veri
+console.log('📦 Ürünler oluşturuluyor...');
+db.createCollection('products');
+db.products.insertMany([
+  {
+    name: "Samsung 4K Monitör 27\"",
+    description: "27 inç 4K UHD çözünürlüklü profesyonel monitör, HDR desteği ile mükemmel görüntü kalitesi.",
+    sku: "SAM-MON-27-4K",
+    barcode: "1234567890001",
+    category: "Elektronik",
+    brand: "Samsung",
+    price: {
+      wholesale: 2400.00,
+      retail: 3200.00,
+      currency: "TRY"
+    },
+    stock: {
+      quantity: 15,
+      minStockLevel: 3,
+      unit: "adet"
+    },
+    dimensions: {
+      weight: 6.8,
+      length: 61.0,
+      width: 19.0,
+      height: 46.0
+    },
+    images: ["https://picsum.photos/400/400?random=1"],
+    status: "active",
+    tags: ["4k", "monitör", "samsung", "profesyonel"],
+    supplier: {
+      name: "TechPro Dağıtım",
+      contact: "Elif Kaya",
+      email: "elif@techpro.com",
+      phone: "+90 216 555 0202"
+    },
+    isB2BOnly: true,
+    minimumOrderQuantity: 1,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Ergonomik Ofis Koltuğu",
+    description: "Lomber desteği olan, ayarlanabilir yükseklik özellikli premium ofis koltuğu.",
+    sku: "ERG-OFK-001",
+    barcode: "1234567890002",
+    category: "Ofis Malzemeleri",
+    brand: "Ergon",
+    price: {
+      wholesale: 850.00,
+      retail: 1200.00,
+      currency: "TRY"
+    },
+    stock: {
+      quantity: 25,
+      minStockLevel: 5,
+      unit: "adet"
+    },
+    dimensions: {
+      weight: 18.5,
+      length: 65.0,
+      width: 65.0,
+      height: 120.0
+    },
+    images: ["https://picsum.photos/400/400?random=2"],
+    status: "active",
+    tags: ["ergonomik", "ofis", "koltuğu", "premium"],
+    supplier: {
+      name: "Ergon Mobilya Ltd.",
+      contact: "Ahmet Yılmaz",
+      email: "ahmet@ergon.com",
+      phone: "+90 212 555 0101"
+    },
+    isB2BOnly: true,
+    minimumOrderQuantity: 1,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Organik Zeytinyağı 1L",
+    description: "Soğuk sıkım organik zeytinyağı, sertifikalı üretim.",
+    sku: "ORG-ZYG-1000",
+    barcode: "1234567890003",
+    category: "Gıda & İçecek",
+    brand: "Ege Naturel",
+    price: {
+      wholesale: 35.00,
+      retail: 65.00,
+      currency: "TRY"
+    },
+    stock: {
+      quantity: 120,
+      minStockLevel: 20,
+      unit: "şişe"
+    },
+    dimensions: {
+      weight: 1.1,
+      length: 8.0,
+      width: 8.0,
+      height: 28.0
+    },
+    images: ["https://picsum.photos/400/400?random=3"],
+    status: "active",
+    tags: ["organik", "zeytinyağı", "doğal", "soğuk-sıkım"],
+    supplier: {
+      name: "Ege Zeytinyağı Kooperatifi",
+      contact: "Mehmet Özkan",
+      email: "mehmet@egezeytin.com",
+      phone: "+90 232 555 0303"
+    },
+    isB2BOnly: true,
+    minimumOrderQuantity: 12,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Premium Kahve Makinesi",
+    description: "Otomatik espresso makinesi, çekirdek öğütücü dahil.",
+    sku: "KAHV-ESP-01",
+    barcode: "1234567890004",
+    category: "Ev & Bahçe",
+    brand: "Barista Pro",
+    price: {
+      wholesale: 1250.00,
+      retail: 1800.00,
+      currency: "TRY"
+    },
+    stock: {
+      quantity: 8,
+      minStockLevel: 2,
+      unit: "adet"
+    },
+    dimensions: {
+      weight: 12.5,
+      length: 35.0,
+      width: 40.0,
+      height: 45.0
+    },
+    images: ["https://picsum.photos/400/400?random=4"],
+    status: "active",
+    tags: ["kahve", "espresso", "otomatik", "premium"],
+    supplier: {
+      name: "Barista Equipment Ltd.",
+      contact: "Seda Demir",
+      email: "seda@barista.com",
+      phone: "+90 212 555 0404"
+    },
+    isB2BOnly: true,
+    minimumOrderQuantity: 1,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    name: "Fitness Yoga Matı",
+    description: "Anti-slip yüzey, 6mm kalınlık, TPE malzeme.",
+    sku: "YOG-MAT-06",
+    barcode: "1234567890005",
+    category: "Spor & Outdoor",
+    brand: "FitLife",
+    price: {
+      wholesale: 45.00,
+      retail: 85.00,
+      currency: "TRY"
+    },
+    stock: {
+      quantity: 50,
+      minStockLevel: 10,
+      unit: "adet"
+    },
+    dimensions: {
+      weight: 1.2,
+      length: 183.0,
+      width: 61.0,
+      height: 0.6
+    },
+    images: ["https://picsum.photos/400/400?random=5"],
+    status: "active",
+    tags: ["yoga", "fitness", "mat", "anti-slip"],
+    supplier: {
+      name: "FitLife Spor Malzemeleri",
+      contact: "Can Öztürk",
+      email: "can@fitlife.com",
+      phone: "+90 216 555 0505"
+    },
+    isB2BOnly: true,
+    minimumOrderQuantity: 5,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+]);
+
+// 4. SETTINGS Koleksiyonu ve Veri
+console.log('⚙️ Sistem ayarları oluşturuluyor...');
+db.createCollection('settings');
+db.settings.insertMany([
+  {
+    key: "company_name",
+    value: "Hygieia B2B Platform",
+    description: "Şirket adı",
+    category: "company",
+    isPublic: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    key: "currency",
+    value: "TRY",
+    description: "Varsayılan para birimi",
+    category: "general",
+    isPublic: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    key: "tax_rate",
+    value: 0.18,
+    description: "KDV oranı (%18)",
+    category: "financial",
+    isPublic: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    key: "min_order_amount",
+    value: 100,
+    description: "Minimum sipariş tutarı",
+    category: "order",
+    isPublic: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    key: "email_notifications",
+    value: true,
+    description: "E-posta bildirimleri",
+    category: "notification",
+    isPublic: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    key: "auto_approve_orders",
+    value: false,
+    description: "Siparişleri otomatik onayla",
+    category: "order",
+    isPublic: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+]);
+
+// 5. ORDERS Koleksiyonu ve Veri
+console.log('📋 Siparişler oluşturuluyor...');
+db.createCollection('orders');
+
+// Önce ürün ID'lerini al
+const products = db.products.find().toArray();
+const users = db.users.find().toArray();
+
+db.orders.insertMany([
+  {
+    orderNumber: "HYG000001",
+    customer: {
+      name: "ABC Ticaret Ltd. Şti.",
+      email: "siparis@abcticaret.com",
+      phone: "+90 555 1234567",
+      company: "ABC Ticaret Ltd. Şti.",
+      taxNumber: "1234567890",
+      billingAddress: {
+        street: "Atatürk Cad. No: 123",
+        city: "İstanbul",
+        state: "Marmara",
+        postalCode: "34000",
+        country: "Türkiye"
+      },
+      shippingAddress: {
+        street: "Atatürk Cad. No: 123",
+        city: "İstanbul",
+        state: "Marmara",
+        postalCode: "34000",
+        country: "Türkiye"
+      }
+    },
+    items: [
+      {
+        product: products[0]._id,
+        sku: products[0].sku,
+        name: products[0].name,
+        quantity: 2,
+        unitPrice: products[0].price.wholesale,
+        totalPrice: products[0].price.wholesale * 2
+      },
+      {
+        product: products[1]._id,
+        sku: products[1].sku,
+        name: products[1].name,
+        quantity: 5,
+        unitPrice: products[1].price.wholesale,
+        totalPrice: products[1].price.wholesale * 5
+      }
+    ],
+    status: "confirmed",
+    paymentStatus: "paid",
+    paymentMethod: "Havale",
+    subtotal: (products[0].price.wholesale * 2) + (products[1].price.wholesale * 5),
+    taxAmount: ((products[0].price.wholesale * 2) + (products[1].price.wholesale * 5)) * 0.18,
+    shippingCost: 50,
+    totalAmount: ((products[0].price.wholesale * 2) + (products[1].price.wholesale * 5)) * 1.18 + 50,
+    currency: "TRY",
+    notes: "Hızlı teslimat isteniyor",
+    estimatedDeliveryDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+    createdBy: users[0]._id,
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date()
+  },
+  {
+    orderNumber: "HYG000002",
+    customer: {
+      name: "XYZ Pazarlama A.Ş.",
+      email: "orders@xyzpazarlama.com",
+      phone: "+90 555 7654321",
+      company: "XYZ Pazarlama A.Ş.",
+      taxNumber: "0987654321",
+      billingAddress: {
+        street: "Cumhuriyet Cad. No: 456",
+        city: "Ankara",
+        state: "İç Anadolu",
+        postalCode: "06000",
+        country: "Türkiye"
+      },
+      shippingAddress: {
+        street: "Cumhuriyet Cad. No: 456",
+        city: "Ankara",
+        state: "İç Anadolu",
+        postalCode: "06000",
+        country: "Türkiye"
+      }
+    },
+    items: [
+      {
+        product: products[2]._id,
+        sku: products[2].sku,
+        name: products[2].name,
+        quantity: 24,
+        unitPrice: products[2].price.wholesale,
+        totalPrice: products[2].price.wholesale * 24
+      }
+    ],
+    status: "processing",
+    paymentStatus: "pending",
+    paymentMethod: "Kredi Kartı",
+    subtotal: products[2].price.wholesale * 24,
+    taxAmount: (products[2].price.wholesale * 24) * 0.18,
+    shippingCost: 75,
+    totalAmount: (products[2].price.wholesale * 24) * 1.18 + 75,
+    currency: "TRY",
+    notes: null,
+    estimatedDeliveryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    createdBy: users[1]._id,
+    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date()
+  }
+]);
+
+// 6. NOTIFICATIONS Koleksiyonu ve Veri
+console.log('🔔 Bildirimler oluşturuluyor...');
+db.createCollection('notifications');
+db.notifications.insertMany([
+  {
+    title: "Hoş Geldiniz!",
+    message: "Hygieia B2B Platform'a hoş geldiniz. Demo veriler başarıyla yüklendi.",
+    type: "success",
+    userId: users[0]._id,
+    isRead: false,
+    action: {
+      type: "link",
+      url: "/dashboard",
+      label: "Dashboard'a Git"
+    },
+    metadata: {},
+    createdAt: new Date()
+  },
+  {
+    title: "Düşük Stok Uyarısı",
+    message: "Bazı ürünlerde stok seviyeleri minimum seviyenin altına düştü.",
+    type: "warning",
+    userId: users[1]._id,
+    isRead: false,
+    action: {
+      type: "link",
+      url: "/products?filter=low-stock",
+      label: "Ürünleri Görüntüle"
+    },
+    metadata: {
+      lowStockCount: 3
+    },
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000)
+  },
+  {
+    title: "Yeni Sipariş",
+    message: "ABC Ticaret Ltd. Şti.'den yeni sipariş alındı.",
+    type: "info",
+    userId: users[1]._id,
+    isRead: true,
+    action: {
+      type: "link",
+      url: "/orders/HYG000001",
+      label: "Siparişi Görüntüle"
+    },
+    metadata: {
+      orderNumber: "HYG000001",
+      amount: 5000
+    },
+    createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000)
+  }
+]);
+
+// 7. İndexler oluştur (performans için)
+console.log('📊 İndexler oluşturuluyor...');
+
+// Users indexleri
+db.users.createIndex({ "email": 1 }, { unique: true });
+db.users.createIndex({ "role": 1 });
+
+// Categories indexleri
+db.categories.createIndex({ "name": 1 }, { unique: true });
+db.categories.createIndex({ "order": 1 });
+
+// Products indexleri
+db.products.createIndex({ "sku": 1 }, { unique: true });
+db.products.createIndex({ "category": 1 });
+db.products.createIndex({ "brand": 1 });
+db.products.createIndex({ "status": 1 });
+db.products.createIndex({ "price.wholesale": 1 });
+
+// Orders indexleri
+db.orders.createIndex({ "orderNumber": 1 }, { unique: true });
+db.orders.createIndex({ "status": 1 });
+db.orders.createIndex({ "paymentStatus": 1 });
+db.orders.createIndex({ "createdAt": -1 });
+db.orders.createIndex({ "customer.email": 1 });
+
+// Settings indexleri
+db.settings.createIndex({ "key": 1 }, { unique: true });
+db.settings.createIndex({ "category": 1 });
+
+// Notifications indexleri
+db.notifications.createIndex({ "userId": 1 });
+db.notifications.createIndex({ "isRead": 1 });
+db.notifications.createIndex({ "createdAt": -1 });
+
+// 8. İstatistikleri göster
+console.log('\n📊 VERİTABANI İSTATİSTİKLERİ');
+console.log('================================');
+console.log('👥 Users:', db.users.countDocuments());
+console.log('📂 Categories:', db.categories.countDocuments());
+console.log('📦 Products:', db.products.countDocuments());
+console.log('📋 Orders:', db.orders.countDocuments());
+console.log('⚙️ Settings:', db.settings.countDocuments());
+console.log('🔔 Notifications:', db.notifications.countDocuments());
+
+console.log('\n🔑 DEMO HESAPLAR');
+console.log('================');
+console.log('📧 admin@hygieia.com (şifre: 123456) - Full Access');
+console.log('📧 manager@hygieia.com (şifre: 123456) - Manager');
+console.log('📧 employee@hygieia.com (şifre: 123456) - Employee');
+
+console.log('\n🎉 Hygieia B2B Platform başarıyla kuruldu!');
+console.log('💡 Artık uygulamanızı başlatabilir ve giriş yapabilirsiniz.'); 

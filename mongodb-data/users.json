@@ -1,0 +1,35 @@
+[
+  {
+    "email": "admin@hygieia.com",
+    "password": "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewfhkY3nQz7TqYKm",
+    "name": "System Administrator",
+    "role": "admin",
+    "permissions": ["*"],
+    "isActive": true,
+    "lastLogin": null,
+    "createdAt": {"$date": "2024-01-15T10:00:00.000Z"},
+    "updatedAt": {"$date": "2024-01-15T10:00:00.000Z"}
+  },
+  {
+    "email": "manager@hygieia.com",
+    "password": "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewfhkY3nQz7TqYKm",
+    "name": "Sales Manager",
+    "role": "manager",
+    "permissions": ["users:read", "products:*", "orders:*", "dashboard:read", "reports:read"],
+    "isActive": true,
+    "lastLogin": null,
+    "createdAt": {"$date": "2024-01-15T10:00:00.000Z"},
+    "updatedAt": {"$date": "2024-01-15T10:00:00.000Z"}
+  },
+  {
+    "email": "employee@hygieia.com",
+    "password": "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewfhkY3nQz7TqYKm",
+    "name": "Sales Employee",
+    "role": "employee",
+    "permissions": ["products:read", "orders:read", "dashboard:read"],
+    "isActive": true,
+    "lastLogin": null,
+    "createdAt": {"$date": "2024-01-15T10:00:00.000Z"},
+    "updatedAt": {"$date": "2024-01-15T10:00:00.000Z"}
+  }
+] 

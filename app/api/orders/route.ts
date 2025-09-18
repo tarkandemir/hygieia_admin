@@ -110,7 +110,11 @@ export async function GET(request: NextRequest) {
 
     // Fetch orders with filters and populate
     const orders = await Order.find(filter)
-      .populate('createdBy', 'name email')
+      .populate({
+        path: 'createdBy',
+        select: 'name email',
+        options: { strictPopulate: false }
+      })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -264,7 +268,11 @@ export async function POST(request: NextRequest) {
 
     // Populate the created order
     const populatedOrder = await Order.findById(order._id)
-      .populate('createdBy', 'name email');
+      .populate({
+        path: 'createdBy',
+        select: 'name email',
+        options: { strictPopulate: false }
+      });
 
     return NextResponse.json(populatedOrder, { status: 201 });
 
