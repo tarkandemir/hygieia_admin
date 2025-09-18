@@ -212,7 +212,7 @@ const OrderSchema = new Schema<IOrder>({
   createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false, // Website siparişleri için opsiyonel
   },
 }, {
   timestamps: true,
@@ -220,7 +220,7 @@ const OrderSchema = new Schema<IOrder>({
 
 // Generate unique order number before saving
 OrderSchema.pre('save', async function(next) {
-  if (this.isNew && !this.orderNumber) {
+  if (!this.orderNumber) {
     const date = new Date();
     const year = date.getFullYear().toString().slice(-2);
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
